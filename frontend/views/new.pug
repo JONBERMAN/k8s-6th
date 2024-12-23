@@ -1,0 +1,33 @@
+form.form-inline(action="/post", method="POST")
+    label.sr-only(for="category") Category
+    .input-group.mb-2.mr-sm-2
+        .input-group-prepend
+            .input-group-text Category
+        input#category.form-control(type="text", name="category", required="")
+
+    label.sr-only(for="place") Place
+    .input-group.mb-2.mr-sm-2
+        .input-group-prepend
+            .input-group-text Place
+        input#place.form-control(type="text", name="place", required="")
+
+    label.sr-only(for="amount") Amount
+    .input-group.mb-2.mr-sm-2
+        .input-group-prepend
+            .input-group-text Amount
+        input#amount.form-control(type="number", name="amount", required="")
+
+    label.sr-only(for="date") Date
+    .input-group.mb-2.mr-sm-2
+        .input-group-prepend
+            .input-group-text Date
+        input#date.form-control(type="date", name="date", required="")
+
+    label.sr-only(for="note") Note
+    .input-group.mb-2.mr-sm-2
+        .input-group-prepend
+            .input-group-text Note
+        input#note.form-control(type="text", name="note", required="")
+
+    button.btn.btn-primary.mb-2(type="submit") Pass to MongoDB
+
