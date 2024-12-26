@@ -19,6 +19,7 @@ if(!process.env.GUESTBOOK_DB_ADDR) {
   throw new Error(errMsg)
 }
 
+
 // Connect to MongoDB, will retry only once
 messages.connectToMongoDB()
 

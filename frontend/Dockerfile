@@ -1,5 +1,5 @@
 # Use lightweight Alpine-based Node image
-FROM node:8-alpine
+FROM node:16-alpine
 
 # Set working directory for the frontend application
 WORKDIR /frontend
