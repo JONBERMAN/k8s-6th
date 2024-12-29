@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: limitrange-back
+  namespace: k8s-6-backend
+spec:
+  limits:
+  - type: Container # LimitRange가 컨테이너별로 적용됨을 명시
+    default: # 기본 한도를 정의
+      cpu: 100m
+      memory: 120Mi
+    defaultRequest: # 기본 요청을 정의
+      cpu: 10m
+      memory: 64Mi
+    max: # 최대값 설정
+      cpu: 200m
+      memory: 200Mi
+    min: # 최소값 설정
+      cpu: 10m
+      memory: 64Mi
+

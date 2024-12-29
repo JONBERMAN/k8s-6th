@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: test-k8s
+  namespace: k8s-6-backend
   labels:
     app: backend
 spec:
@@ -20,17 +20,22 @@ spec:
         image: taehoon981/backend:2.0
         ports:
         - containerPort: 3000
-        env:
-        - name: GUESTBOOK_DB_ADDR
-          value: "mongodb-svc.test-k8s.svc.cluster.local:27017"  
-        - name: PORT
-          value: "3000"
+        envFrom:
+        - configMapRef:
+            name: cf-back 
+        resources:
+          requests:
+            cpu: "10m"
+            memory: 64Mi
+          limits:
+            cpu: "100m"
+            memory: 120Mi    
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: backend-svc
-  namespace: test-k8s
+  namespace: k8s-6-backend
   labels:
     app: backend
 spec:
@@ -39,4 +44,4 @@ spec:
     targetPort: 3000
   selector:
     app: backend
-
+---

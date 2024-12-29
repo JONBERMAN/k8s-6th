@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: rq-back
+  namespace: k8s-6-backend
+spec:
+  hard:
+    requests.cpu: 512m
+    requests.memory: 500Mi
+    limits.cpu: 1024m
+    limits.memory: 1Gi
+

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongodb
-  namespace: test-k8s
+  namespace: k8s-6-db
   labels:
     app: mongodb
 spec:
@@ -20,15 +20,15 @@ spec:
         image: mongo:4.0
         ports:
         - containerPort: 27017
-        env:
-        - name: MONGO_INITDB_DATABASE
-          value: guestbook
+        envFrom:
+        - configMapRef:
+            name: cf-db
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mongodb-svc
-  namespace: test-k8s
+  namespace: k8s-6-db
   labels:
     app: mongodb
 spec:
