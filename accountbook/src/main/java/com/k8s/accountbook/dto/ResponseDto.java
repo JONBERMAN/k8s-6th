@@ -16,4 +16,7 @@ public class ResponseDto<T> {
         return new ResponseDto<>(HttpStatus.OK, "Success", result);
     }
 
+    public static <T> ResponseDto<T> fail(T result){
+        return new ResponseDto<>(HttpStatus.NOT_FOUND, "Fail", result);
+    }
 }

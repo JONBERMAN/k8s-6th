@@ -1,11 +1,8 @@
 spring:
-#  redis:
-#    host: 43.201.218.182
-#    port: 6379
   datasource:
-    url: jdbc:mysql://localhost:3306/accountbook
-    username: root
-    password: 245245
+    url: jdbc:mysql://${MYSQL_HOST}:3306/accountbook
+    username: ${MSQL_USER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:

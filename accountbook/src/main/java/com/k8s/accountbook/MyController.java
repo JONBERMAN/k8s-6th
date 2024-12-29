@@ -35,7 +35,7 @@ public class MyController {
             return ResponseDto.ok("회원 가입 성공");
         }
         else {
-            return ResponseDto.ok("사용할 수 없는 아이디 입니다.");
+            return ResponseDto.fail("사용할 수 없는 아이디 입니다.");
         }
     }
 
