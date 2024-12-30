@@ -1,14 +1,13 @@
-if messages.length > 0
-    for msg in messages
+if userData != null
+    for msg in userData
         .card.my-3.col-12
             .card-body
-                p.card-text Category: #{msg.category}
+                p.card-text Expense: #{msg.expense}
                 p.card-text Place: #{msg.place}
-                p.card-text Amount: #{msg.amount}
+                p.card-text Money: #{msg.money}
                 p.card-text Date: #{msg.date}
-                p.card-text Note: #{msg.note}
 
 else
     p.alert.alert-info(role='alert')
-        | There is currently no data in the guestbook.
+        | There is currently no data in the AccountBook.
 

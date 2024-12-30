@@ -14,5 +14,8 @@
     "express": "^4.16.4",
     "moment": "^2.24.0",
     "pug": "^2.0.3"
+  },
+  "dependencies": {
+    "express-session": "^1.18.1"
   }
 }

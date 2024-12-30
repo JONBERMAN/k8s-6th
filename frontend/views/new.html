@@ -1,0 +1,39 @@
+
+<form class="form-inline" action="/post" method="POST">
+  <label class="sr-only" for="category">Category</label>
+  <div class="input-group mb-2 mr-sm-2">
+    <div class="input-group-prepend">
+      <div class="input-group-text">Category</div>
+    </div>
+    <input class="form-control" id="category" type="text" name="category" required=""/>
+  </div>
+  <label class="sr-only" for="place">Place</label>
+  <div class="input-group mb-2 mr-sm-2">
+    <div class="input-group-prepend">
+      <div class="input-group-text">Place</div>
+    </div>
+    <input class="form-control" id="place" type="text" name="place" required=""/>
+  </div>
+  <label class="sr-only" for="amount">Amount</label>
+  <div class="input-group mb-2 mr-sm-2">
+    <div class="input-group-prepend">
+      <div class="input-group-text">Amount</div>
+    </div>
+    <input class="form-control" id="amount" type="number" name="amount" required=""/>
+  </div>
+  <label class="sr-only" for="date">Date</label>
+  <div class="input-group mb-2 mr-sm-2">
+    <div class="input-group-prepend">
+      <div class="input-group-text">Date</div>
+    </div>
+    <input class="form-control" id="date" type="date" name="date" required=""/>
+  </div>
+  <label class="sr-only" for="note">Note</label>
+  <div class="input-group mb-2 mr-sm-2">
+    <div class="input-group-prepend">
+      <div class="input-group-text">Note</div>
+    </div>
+    <input class="form-control" id="note" type="text" name="note" required=""/>
+  </div>
+  <button class="btn btn-primary mb-2" type="submit">Pass to MongoDB</button>
+</form>

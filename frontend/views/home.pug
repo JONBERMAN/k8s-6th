@@ -12,7 +12,18 @@ html
             .container
                 h1 
                     a(href='/') RAPA 가계부
-                a(href='http://dshub.cloud').text-muted Myhome : Docker Team 6
+                a().text-muted Myhome : Docker Team 6
+                //- div
+                //-     a.btn.btn-primary(href='/login') 로그인
+                //-     a.btn.btn-secondary(href='/signup') 회원가입
+                if userData
+                    div
+                        | #{userName} 의 가계부
+                        a.btn.btn-danger(href='/logout') 로그아웃
+                else
+                    div
+                        a.btn.btn-primary(href='/login') 로그인
+                        a.btn.btn-secondary(href='/signup') 회원가입
         .container.posts.mt-0
             include new.pug
             include list.pug
