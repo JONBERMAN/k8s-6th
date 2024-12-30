@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-tempo
-  namespace: tempo
+  name: openebs-mysql-pvc
+  namespace: k8s-6-db
 spec:
+  storageClassName: "openebs-hostpath"
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
-  storageClassName: manual  
+
 

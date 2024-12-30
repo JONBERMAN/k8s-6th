@@ -1,14 +1,4 @@
 tempo:
-  server:
-    http_listen_port: 3100
-        
-  distributor:
-    receivers:
-      otlp:
-        protocols:
-          grpc:
-          http:
-
   storage:
     trace:
       backend: local
