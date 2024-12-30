@@ -12,6 +12,8 @@ spec:
       app: frontend
   template:
     metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-nodejs: "true"
       labels:
         app: frontend
     spec:

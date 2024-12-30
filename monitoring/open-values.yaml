@@ -1,0 +1,38 @@
+mode: "deployment"
+config:
+  exporters:
+    otlp:
+      endpoint: tempo-distributor-discovery.tempo:4317
+      tls:
+        insecure: true
+  extensions:
+    health_check: {}
+  processors:
+    memory_limiter:
+      check_interval: 1s   
+      limit_percentage: 75
+      spike_limit_percentage: 15
+    batch:
+      send_batch_size: 10000
+      timeout: 10s
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: ${env:MY_POD_IP}:4317
+        http:
+          endpoint: ${env:MY_POD_IP}:4318 
+  service:
+    extensions:
+    - health_check
+    pipelines:
+      traces:
+        exporters:
+        - otlp
+        processors:
+        - memory_limiter
+        - batch
+        receivers:
+        - otlp
+ 
+
