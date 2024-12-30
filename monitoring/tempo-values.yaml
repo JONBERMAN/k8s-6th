@@ -1,0 +1,34 @@
+tempo:
+  server:
+    http_listen_port: 3100
+        
+  distributor:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+
+  storage:
+    trace:
+      backend: local
+      local:
+        path: /var/tempo/traces
+      wal:
+        path: /var/tempo/wal
+       
+  extraVolumeMounts:
+    - name: tempo-storage
+      mountPath: /data/tempo/trace
+    - name: tempo-storage
+      mountPath: /data/tempo/wal
+
+extraVolumes:
+- name: tempo-storage
+  persistentVolumeClaim:
+    claimName: pvc-tempo
+
+
+
+    
+  
