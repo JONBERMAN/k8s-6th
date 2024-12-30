@@ -10,7 +10,8 @@ public class UserResponseDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UserInfoResponse{
+    public static class LoginResponse{
+        private Long userId;
         private String name;
     }
 }

@@ -6,6 +6,7 @@ import com.k8s.accountbook.accountbook.AccountBookRepository;
 import com.k8s.accountbook.user.User;
 import com.k8s.accountbook.user.UserRepository;
 import com.k8s.accountbook.google.GoogleOcrService;
+import com.k8s.accountbook.user.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,15 +42,13 @@ public class MyService {
         }
     }
 
-    public Long signIn(String id, String password){
+    public UserResponseDto.LoginResponse signIn(String id, String password){
         User findUser = userRepository.findByIdentityAndPassword(id, password);
 
         if (findUser != null) {
-
-            return findUser.getId();
-
+            return new UserResponseDto.LoginResponse(findUser.getId(), findUser.getName());
         } else  {
-            return -1L;
+            return new UserResponseDto.LoginResponse(-1L, null);
         }
     }
 

@@ -41,23 +41,14 @@ public class MyController {
 
     // 로그인
     @PostMapping("/user/signin")
-    public ResponseDto<Long> signIn(@RequestBody RequestDto.SignInDto signInDto){
+    public ResponseDto<UserResponseDto.LoginResponse> signIn(@RequestBody RequestDto.SignInDto signInDto){
 
-        Long userId = myService.signIn(signInDto.getId(), signInDto.getPassword());
+        UserResponseDto.LoginResponse response = myService.signIn(signInDto.getId(), signInDto.getPassword());
 
-        return ResponseDto.ok(userId);
+        return ResponseDto.ok(response);
     }
 
 
-
-    // 회원 이름 조회.
-    @GetMapping("/user/{userId}")
-    public ResponseDto<UserResponseDto.UserInfoResponse> getUserName(@PathVariable Long userId){
-
-        String name = myService.getUser(userId).getName();
-
-        return ResponseDto.ok(new UserResponseDto.UserInfoResponse(name));
-    }
 
     // 회원 가계부 조회.
     @GetMapping("/accountbook/{userId}")
