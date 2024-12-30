@@ -3,9 +3,15 @@ if userData != null
         .card.my-3.col-12
             .card-body
                 p.card-text Expense: #{msg.expense}
-                p.card-text Place: #{msg.place}
                 p.card-text Money: #{msg.money}
                 p.card-text Date: #{msg.date}
+                if msg.receiptDirectory
+                    button.btn.btn-primary(type="button", data-toggle="collapse", data-target='#receipt-' + msg.id, aria-expanded="false", aria-controls='receipt-' + msg.id)
+                        | View Receipt
+                    .collapse.mt-2(id='receipt-' + msg.id)
+                        img.img-fluid(src='/ocrImage/' + msg.receiptDirectory, alt="Receipt Image")
+                else
+                    button.btn.btn-secondary(type="button", disabled) No Receipt Available
 
 else
     p.alert.alert-info(role='alert')
