@@ -5,11 +5,11 @@ form.form-inline(action="/registerAB", method="POST")
             .input-group-text Expense
         input#expense.form-control(type="text", name="expense", required="")
 
-    label.sr-only(for="place") Place
+    label.sr-only(for="receipt") Receipt
     .input-group.mb-2.mr-sm-2
         .input-group-prepend
-            .input-group-text Place
-        input#place.form-control(type="text", name="place", required="")
+            .input-group-text Receipt
+        input#receipt.form-control(type="file", name="receipt", accept=".jpg, .jpeg, .png")
 
     label.sr-only(for="money") Money
     .input-group.mb-2.mr-sm-2
