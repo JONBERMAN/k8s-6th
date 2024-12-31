@@ -42,7 +42,7 @@ public class RequestDto {
         private String expense;
         private LocalDate date;
         private Integer money;
-        private String filePath;
+        private String receiptDirectory;
     }
 
     @Data

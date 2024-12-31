@@ -73,7 +73,7 @@ public class MyController {
     @PostMapping("/accountbook")
     public ResponseDto<String> setAccountBook(@RequestBody RequestDto.AbDto abDto){
 
-        myService.setAB(abDto.getUserId() ,abDto.getMoney(), abDto.getDate(), abDto.getExpense(), abDto.getFilePath());
+        myService.setAB(abDto.getUserId() ,abDto.getMoney(), abDto.getDate(), abDto.getExpense(), abDto.getReceiptDirectory());
 
         return ResponseDto.ok("가계부 등록.");
     }
