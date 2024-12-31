@@ -7,5 +7,5 @@ data:
 kind: ConfigMap
 metadata:
   name: mysql-cm
-  namespace: db-ns
+  namespace: k8s-6-db
 
