@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: frontend-pv
+  namespace: k8s-6-frontend
+  labels:
+    app: frontend
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data-dir/frontend-pv
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: frontend-pvc
+  namespace: k8s-6-frontend
+spec:
+  resources:
+    requests:
+      storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  selector:
+    matchLabels:
+      app: frontend
