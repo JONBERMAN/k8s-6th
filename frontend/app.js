@@ -258,7 +258,7 @@ const upload = multer({ storage });
 // 새로운 엔드포인트: 파일 업로드 및 OCR API 호출
 router.post('/upload-receipt', upload.single('receipt'), async (req, res) => {
     try {
-        const filePath = path.join(__dirname, '/ocrImage', req.file.filename);
+        const filePath = path.join('/ocrImage', req.file.filename);
 
         // OCR API 호출
         const ocrResponse = await axios.post(ocrUri, {
