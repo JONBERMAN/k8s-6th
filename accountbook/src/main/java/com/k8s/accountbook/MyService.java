@@ -59,7 +59,7 @@ public class MyService {
 
     }
 
-    public void setAB(Long userId,Integer money, LocalDate date, String expense){
+    public void setAB(Long userId,Integer money, LocalDate date, String expense, String receiptDirectory){
         User findUser = userRepository.findById(userId).orElseThrow();
 
         AccountBook ab = AccountBook.builder()
@@ -67,6 +67,7 @@ public class MyService {
                 .money(money)
                 .date(date)
                 .expense(expense)
+                .receipt(receiptDirectory)
                 .build();
 
         accountBookRepository.save(ab);

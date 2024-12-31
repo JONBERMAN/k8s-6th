@@ -42,6 +42,7 @@ public class RequestDto {
         private String expense;
         private LocalDate date;
         private Integer money;
+        private String receiptDirectory;
     }
 
     @Data
@@ -49,8 +50,6 @@ public class RequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ReceiptDto{
-        private Long userId;
-        private String expense;
         private String receiptDirectory;
     }
 

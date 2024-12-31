@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class MyController {
     @PostMapping("/accountbook")
     public ResponseDto<String> setAccountBook(@RequestBody RequestDto.AbDto abDto){
 
-        myService.setAB(abDto.getUserId() ,abDto.getMoney(), abDto.getDate(), abDto.getExpense());
+        myService.setAB(abDto.getUserId() ,abDto.getMoney(), abDto.getDate(), abDto.getExpense(), abDto.getReceiptDirectory());
 
         return ResponseDto.ok("가계부 등록.");
     }
@@ -82,11 +83,11 @@ public class MyController {
 
     // ocr 영수증 등록
     @PostMapping("/accountbook/ocr")
-    public ResponseDto<String> setReceipt(@RequestBody RequestDto.ReceiptDto receiptDto) throws IOException {
+    public ResponseDto<Integer> setReceipt(@RequestBody RequestDto.ReceiptDto receiptDto) throws IOException {
 
-        googleOcrService.detectText(receiptDto.getReceiptDirectory());
+        Integer price = googleOcrService.detectText(receiptDto.getReceiptDirectory());
 
-        return ResponseDto.ok("인식 성공.");
+        return ResponseDto.ok(price);
     }
 
 }
