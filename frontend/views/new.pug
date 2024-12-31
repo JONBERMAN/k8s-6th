@@ -1,15 +1,16 @@
-form.form-inline(action="/registerAB", method="POST")
+form.form-inline(action="/registerAB", method="POST", enctype="multipart/form-data")
     label.sr-only(for="expense") Expense
     .input-group.mb-2.mr-sm-2
         .input-group-prepend
             .input-group-text Expense
         input#expense.form-control(type="text", name="expense", required="")
 
-    label.sr-only(for="place") Place
+    label.sr-only(for="receipt") Receipt
     .input-group.mb-2.mr-sm-2
         .input-group-prepend
-            .input-group-text Place
-        input#place.form-control(type="text", name="place", required="")
+            .input-group-text Receipt
+        input#receipt.form-control(type="file", name="receipt", accept=".jpg, .jpeg, .png")
+        button.btn.btn-secondary.ml-2(type="button", id="recognize-receipt") 인식
 
     label.sr-only(for="money") Money
     .input-group.mb-2.mr-sm-2
@@ -23,6 +24,36 @@ form.form-inline(action="/registerAB", method="POST")
             .input-group-text Date
         input#date.form-control(type="date", name="date", required="")
 
-
     button.btn.btn-primary.mb-2(type="submit") 가계부 등록
 
+script.
+    document.getElementById('recognize-receipt').addEventListener('click', function () {
+        const receiptInput = document.getElementById('receipt');
+        const moneyInput = document.getElementById('money');
+        
+        if (!receiptInput.files.length) {
+            alert('먼저 이미지를 업로드해주세요.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('receipt', receiptInput.files[0]);
+
+        fetch('/upload-receipt', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                moneyInput.value = data.amount; // 성공 시 money 입력 칸에 값 설정
+                alert('영수증 인식이 완료되었습니다.');
+            } else {
+                alert('영수증 인식에 실패했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('서버 요청 중 오류가 발생했습니다.');
+        });
+    });
