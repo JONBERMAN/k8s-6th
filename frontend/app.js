@@ -9,17 +9,18 @@ const fs = require("fs");
 
 const util = require('./utils')
 
-//const GUESTBOOK_API_ADDR = process.env.GUESTBOOK_API_ADDR
-const GUESTBOOK_API_ADDR = "192.168.56.100:8080";
+const ACCOUNTBOOK_API_ADDR = process.env.ACCOUNTBOOK_API_ADDR
+//const ACCOUNTBOOK_API_ADDR = "192.168.56.100:8080";
 
-const BACKEND_URI = `http://${GUESTBOOK_API_ADDR}/k8s`
+const BACKEND_URI = `http://${ACCOUNTBOOK_API_ADDR}:8080/k8s`
 
-const signupUri = "http://192.168.56.100:8080/k8s/user/signup";
-const signinUri = "http://192.168.56.100:8080/k8s/user/signin";
-const getUserNameUri = "http://192.168.56.100:8080/k8s/user/:userId";
-const getABUri = "http://192.168.56.100:8080/k8s/accountbook/:userId";
-const ocrUri = "http://192.168.56.100:8080/k8s/accountbook/ocr";
-const registerABUri = "http://192.168.56.100:8080/k8s/accountbook";
+
+const signupUri = `${BACKEND_URI}/user/signup`
+const signinUri = `${BACKEND_URI}/user/signin`;
+const getUserNameUri = `${BACKEND_URI}/user/:userId`;
+const getABUri = `${BACKEND_URI}/accountbook/:userId`;
+const ocrUri = `${BACKEND_URI}/accountbook/ocr`;
+const registerABUri = `${BACKEND_URI}/accountbook`;
 
 app.set("view engine", "pug")
 app.set("views", path.join(__dirname, "views"))
@@ -57,7 +58,7 @@ router.use(bodyParser.urlencoded({ extended: false }))
 
 // Starts an http server on the $PORT environment variable
 //const PORT = process.env.PORT;
-const PORT = 3001;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
@@ -82,6 +83,8 @@ app.listen(PORT, () => {
 router.get("/", (req, res) => {
   const { userId } = req.session;
   console.log("req.session.userId:", req.session);
+  
+  console.log("ACCOUNTBOOK_API_ADDR:", ACCOUNTBOOK_API_ADDR);
 
   if (!userId) {
     res.render("home", { userData: null });
@@ -166,78 +169,13 @@ router.get("/logout", (req, res) => {
 
 
 
-// // Ensure the /ocrImage directory exists
-// const uploadDir = path.join(__dirname, "/ocrImage");
-// if (!fs.existsSync(uploadDir)) {
-//   fs.mkdirSync(uploadDir);
-// }
-
-// // Set up Multer for file uploads
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, uploadDir); // Save to /ocrImage directory
-//   },
-//   filename: (req, file, cb) => {
-//     const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
-//     cb(null, uniqueName);
-//   },
-// });
-
-// const upload = multer({ storage: storage });
-
-
-
-// // Handle POST request with file upload
-// router.post("/registerAB", upload.single("receipt"), (req, res) => {
-//   const { expense, money, date } = req.body;
-//   const userId = req.session.userId;
-
-//   if (!userId) {
-//     res.status(401).send("<script>alert('로그인 후 이용 가능합니다.');location.href='/login';</script>");
-//     return;
-//   }
-
-//   if (!expense || !money || !date) {
-//     res.status(400).send("모든 필드를 입력해주세요.");
-//     return;
-//   }
-
-//   // Check if a receipt was uploaded
-//   let receiptDirectory = null;
-//   if (req.file) {
-//     receiptDirectory = `/ocrImage/${req.file.filename}`;
-//     console.log(`receiptDirectory:`, receiptDirectory);
-//   }
-
-//   console.log(`Registering AB with data:`, { userId, expense, money, date, receiptDirectory });
-
-//   axios
-//     .post(registerABUri, {
-//       userId,
-//       expense,
-//       money,
-//       date,
-//       receiptDirectory,
-//     })
-//     .then((response) => {
-//       console.log(`Response from registerABUri:`, response.status);
-//       res.redirect("/");
-//     })
-//     .catch((error) => {
-//       console.error("Error:", error.message);
-//       res.status(500).send("Internal Server Error");
-//     });
-// });
-
-
-
 // 설정: 파일 업로드 디렉터리
 // const upload = multer({ dest: 'uploads/' });
 
 // 설정: 파일 저장 디렉터리와 파일 이름 지정
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      const uploadDir = path.join(__dirname, '/ocrImage');
+      const uploadDir = path.join( '/ocrImage');
       if (!fs.existsSync(uploadDir)) {
           fs.mkdirSync(uploadDir); // 업로드 디렉터리가 없으면 생성
       }
@@ -285,7 +223,7 @@ router.post('/registerAB', upload.single('receipt'), (req, res) => {
 
   const userId = req.session.userId; // 세션에서 사용자 ID 가져오기
   const { expense, money, date } = req.body; // 폼 데이터 추출
-  const receiptDirectory = req.file ? path.join('ocrImage', req.file.filename) : null; // 업로드된 파일 경로
+  const receiptDirectory = req.file ? path.join('/ocrImage', req.file.filename) : null; // 업로드된 파일 경로
 
   // 입력값 검증
   if (!userId) {
@@ -345,128 +283,4 @@ router.post('/registerAB', upload.single('receipt'), (req, res) => {
           });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**************************************************************************** */
-
-
-
-// 설정: 이미지 저장 경로 및 파일명 중복 방지
-// const upload = multer({
-//   storage: multer.diskStorage({
-//     destination: (req, file, cb) => {
-//       const dir = path.join(__dirname, "/ocrImage");
-//       if (!fs.existsSync(dir)) {
-//         fs.mkdirSync(dir);
-//       }
-//       cb(null, dir);
-//     },
-//     filename: (req, file, cb) => {
-//       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-//       cb(null, `${uniqueSuffix}-${file.originalname}`);
-//     },
-//   }),
-//   fileFilter: (req, file, cb) => {
-//     const filetypes = /jpeg|jpg|png/;
-//     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-//     const mimetype = filetypes.test(file.mimetype);
-
-//     if (mimetype && extname) {
-//       return cb(null, true);
-//     }
-//     cb(new Error("Only .jpg, .jpeg, and .png files are allowed!"));
-//   },
-
-// });
-
-
-// Handles POST request to /post.    가게부 직접 등록
-//router.post('/registerAB', (req, res) => {
-// router.post("/registerAB", upload.single("receipt"), (req, res) => {
-//   console.log(`received request: ${req.method} ${req.url}`)
-
-//   // validate request
-//   const userId = req.session.userId
-//   const { expense, money, date } = req.body;
-//   const receiptPath = req.file ? req.file.path : null;
-
-
-//   if (!userId) {
-//     res.send("<script>alert('로그인 후 이용가능합니다.');location.href='/login';</script>");
-//     return;
-//   }
-
-//   if (!expense || expense.length == 0) {
-//     res.status(400).send("expense is not specified");
-//     return;
-//   }
-
-//   if (!money || money.length == 0 || isNaN(money)) {
-//     res.status(400).send("money is not specified or is not a valid number");
-//     return;
-//   }
-
-//   if (!date || date.length == 0) {
-//     res.status(400).send("Date is not specified")
-//     return
-//   }
-
-
-//   // 이미지가 업로드된 경우 OCR API 호출
-//   if (receiptPath) {
-//     console.log(`Processing OCR for receipt: ${receiptPath}`);
-//     axios
-//       .post(ocrUri, {
-//         userId,
-//         expense,
-//         receiptDirectory: receiptPath,
-//       })
-//       .then((response) => {
-//         console.log("OCR API Response:", response.data);
-//         res.redirect("/");
-//       })
-//       .catch((error) => {
-//         console.error("OCR API Error:", error.message);
-//         res.status(500).send("Failed to process OCR");
-//       });
-//   } else {
-//     axios
-//       .post(registerABUri, {
-//         userId: userId,
-//         expense: expense,
-//         money: money,
-//         date: date,
-//         receiptDirectory: receiptDirectory
-//       })
-//       .then((response) => {
-//         console.log(`Response from registerABUri` + response.status);
-//         res.redirect("/");
-//       })
-//       .catch((error) => {
-//         console.error("Error: " + error);
-//         res.status(500).send("Internal Server Error");
-//       });
-
-//   }
-
-
-
-// });
 
