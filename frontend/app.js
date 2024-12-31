@@ -24,6 +24,8 @@ const registerABUri = `${BACKEND_URI}/accountbook`;
 
 app.set("view engine", "pug")
 app.set("views", path.join(__dirname, "views"))
+//app.use('/ocrImage', express.static(path.join(__dirname, 'ocrImage')));
+app.use('/ocrImage', express.static(path.join(__dirname, 'frontend', 'ocrImage')));
 
 // 세션 설정
 app.use(
@@ -175,7 +177,7 @@ router.get("/logout", (req, res) => {
 // 설정: 파일 저장 디렉터리와 파일 이름 지정
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      const uploadDir = path.join( '/ocrImage');
+      const uploadDir = path.join(__dirname, 'frontend', 'ocrImage');
       if (!fs.existsSync(uploadDir)) {
           fs.mkdirSync(uploadDir); // 업로드 디렉터리가 없으면 생성
       }
@@ -196,7 +198,7 @@ const upload = multer({ storage });
 // 새로운 엔드포인트: 파일 업로드 및 OCR API 호출
 router.post('/upload-receipt', upload.single('receipt'), async (req, res) => {
     try {
-        const filePath = path.join('/ocrImage', req.file.filename);
+        const filePath = path.join(__dirname, 'frontend', 'ocrImage', req.file.filename);
 
         // OCR API 호출
         const ocrResponse = await axios.post(ocrUri, {
@@ -218,69 +220,121 @@ router.post('/upload-receipt', upload.single('receipt'), async (req, res) => {
 
 
 // 엔드포인트 정의
-router.post('/registerAB', upload.single('receipt'), (req, res) => {
-  console.log(`Received request: ${req.method} ${req.url}`);
+// router.post('/registerAB', upload.single('receipt'), (req, res) => {
+//   console.log(`Received request: ${req.method} ${req.url}`);
 
-  const userId = req.session.userId; // 세션에서 사용자 ID 가져오기
-  const { expense, money, date } = req.body; // 폼 데이터 추출
-  const receiptDirectory = req.file ? path.join('/ocrImage', req.file.filename) : null; // 업로드된 파일 경로
+//   const userId = req.session.userId; // 세션에서 사용자 ID 가져오기
+//   const { expense, money, date } = req.body; // 폼 데이터 추출
+//   const receiptDirectory = req.file ? path.join('/ocrImage', req.file.filename) : null; // 업로드된 파일 경로
 
-  // 입력값 검증
-  if (!userId) {
-      res.send("<script>alert('로그인 후 이용가능합니다.');location.href='/login';</script>");
-      return;
+//   // 입력값 검증
+//   if (!userId) {
+//       res.send("<script>alert('로그인 후 이용가능합니다.');location.href='/login';</script>");
+//       return;
+//   }
+
+//   if (!expense || expense.length === 0) {
+//       res.status(400).send("Expense is not specified");
+//       return;
+//   }
+
+//   if (!money || money.length === 0 || isNaN(money)) {
+//       res.status(400).send("Money is not specified or is not a valid number");
+//       return;
+//   }
+
+//   if (!date || date.length === 0) {
+//       res.status(400).send("Date is not specified");
+//       return;
+//   }
+
+//   // 이미지가 업로드된 경우 OCR API 호출
+//   if (receiptDirectory) {
+//       console.log(`Processing OCR for receipt: ${receiptDirectory}`);
+//       axios
+//           .post(ocrUri, {
+//               userId,
+//               expense,
+//               receiptDirectory, // OCR API에 파일 경로 전달
+//           })
+//           .then((response) => {
+//               console.log("OCR API Response:", response.data);
+//               res.redirect("/");
+//           })
+//           .catch((error) => {
+//               console.error("OCR API Error:", error.message);
+//               res.status(500).send("Failed to process OCR");
+//           });
+//   } else {
+//       // 이미지 없이 데이터만 저장
+//       axios
+//           .post(registerABUri, {
+//               userId,
+//               expense,
+//               money,
+//               date,
+//               receiptDirectory: null, // 파일이 없을 경우 null 전달
+//           })
+//           .then((response) => {
+//               console.log(`Response from registerABUri: ${response.status}`);
+//               res.redirect("/");
+//           })
+//           .catch((error) => {
+//               console.error("Error:", error.message);
+//               res.status(500).send("Internal Server Error");
+//           });
+//   }
+// });
+
+// 파일 경로와 입력 데이터를 포함하여 RegisterAB 처리 함수
+const registerABHandler = async (req, res) => {
+  try {
+      const userId = req.session.userId;
+      const { expense, money, date } = req.body;
+      const receiptDirectory = req.file ? path.join('frontend', 'ocrImage', req.file.filename) : null;
+
+      // 입력값 검증
+      if (!userId) {
+          return res.send("<script>alert('로그인 후 이용가능합니다.');location.href='/login';</script>");
+      }
+      if (!expense || !money || !date) {
+          return res.status(400).send("필수 필드가 누락되었습니다.");
+      }
+
+      // 데이터 저장 요청
+      const response = await axios.post(registerABUri, {
+          userId,
+          expense,
+          money,
+          date,
+          receiptDirectory,
+      });
+      console.log(`RegisterAB API Response: ${response.status}`);
+      res.redirect('/');
+  } catch (error) {
+      console.error('RegisterAB Error:', error.message);
+      res.status(500).send('Internal Server Error');
   }
+};
 
-  if (!expense || expense.length === 0) {
-      res.status(400).send("Expense is not specified");
-      return;
-  }
+// OCR을 위해 파일 업로드 처리
+router.post('/upload-receipt', upload.single('receipt'), async (req, res) => {
+  try {
+      const filePath = path.join(__dirname, 'ocrImage', req.file.filename);
 
-  if (!money || money.length === 0 || isNaN(money)) {
-      res.status(400).send("Money is not specified or is not a valid number");
-      return;
-  }
+      // OCR API 호출
+      const ocrResponse = await axios.post(ocrUri, {
+          receiptDirectory: filePath,
+      });
 
-  if (!date || date.length === 0) {
-      res.status(400).send("Date is not specified");
-      return;
-  }
-
-  // 이미지가 업로드된 경우 OCR API 호출
-  if (receiptDirectory) {
-      console.log(`Processing OCR for receipt: ${receiptDirectory}`);
-      axios
-          .post(ocrUri, {
-              userId,
-              expense,
-              receiptDirectory, // OCR API에 파일 경로 전달
-          })
-          .then((response) => {
-              console.log("OCR API Response:", response.data);
-              res.redirect("/");
-          })
-          .catch((error) => {
-              console.error("OCR API Error:", error.message);
-              res.status(500).send("Failed to process OCR");
-          });
-  } else {
-      // 이미지 없이 데이터만 저장
-      axios
-          .post(registerABUri, {
-              userId,
-              expense,
-              money,
-              date,
-              receiptDirectory: null, // 파일이 없을 경우 null 전달
-          })
-          .then((response) => {
-              console.log(`Response from registerABUri: ${response.status}`);
-              res.redirect("/");
-          })
-          .catch((error) => {
-              console.error("Error:", error.message);
-              res.status(500).send("Internal Server Error");
-          });
+      const amount = ocrResponse.data.amount; // API 응답에서 금액 추출
+      res.json({ success: true, amount });
+  } catch (error) {
+      console.error('OCR Error:', error);
+      res.json({ success: false, message: 'OCR 인식 실패' });
   }
 });
+
+// 가계부 등록 요청 처리
+router.post('/registerAB', upload.single('receipt'), registerABHandler);
 

@@ -1,19 +1,38 @@
-if userData != null
-    for msg in userData
+doctype html
+html
+  head
+    title Account Book List
+    // 부트스트랩 CSS 추가
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+  body
+    if userData != null
+      for msg in userData
         .card.my-3.col-12
-            .card-body
-                p.card-text Expense: #{msg.expense}
-                p.card-text Money: #{msg.money}
-                p.card-text Date: #{msg.date}
-                if msg.receiptDirectory
-                    button.btn.btn-primary(type="button", data-toggle="collapse", data-target='#receipt-' + msg.id, aria-expanded="false", aria-controls='receipt-' + msg.id)
-                        | View Receipt
-                    .collapse.mt-2(id='receipt-' + msg.id)
-                        img.img-fluid(src='/ocrImage/' + msg.receiptDirectory, alt="Receipt Image")
-                else
-                    button.btn.btn-secondary(type="button", disabled) No Receipt Available
-
-else
-    p.alert.alert-info(role='alert')
+          .card-body
+            p.card-text Expense: #{msg.expense}
+            p.card-text Money: #{msg.money}
+            p.card-text Date: #{msg.date}
+            if msg.receiptDirectory
+              button.btn.btn-primary(type="button", data-toggle="collapse", data-target='#receipt-' + msg.id, aria-expanded="false", aria-controls='receipt-' + msg.id)
+                | View Receipt
+              .collapse.mt-2(id='receipt-' + msg.id)
+                img.img-fluid(src='/ocrImage/frontend/' + msg.receiptDirectory, alt='/ocrImage/' + msg.receiptDirectory)
+            else
+              button.btn.btn-secondary(type="button", disabled) No Receipt Available
+    else
+      p.alert.alert-info(role='alert')
         | There is currently no data in the AccountBook.
 
+    // 부트스트랩 JS 및 jQuery 추가
+    script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js")
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+
+    // 로그 출력 JavaScript
+    //- script.
+    //-   document.addEventListener('DOMContentLoaded', function () {
+    //-     const images = document.querySelectorAll('img[id^="receipt-img-"]');
+    //-     images.forEach(img => {
+    //-       console.log(`Image src for receipt ID ${img.id}: ${img.src}`);
+    //-     });
+    //-   });
