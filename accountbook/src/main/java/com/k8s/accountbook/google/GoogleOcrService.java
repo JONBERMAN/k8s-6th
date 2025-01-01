@@ -14,8 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,13 +30,18 @@ public class GoogleOcrService {
     String bucketFilePath;
     private final GoogleStorageService googleCloudStorageService;
 
-    public Integer detectTextGcs(MultipartFile cardImg) throws IOException {
-        googleCloudStorageService.upload(cardImg);
-
-        // TODO(developer): Replace these variables before running the sample.
+    public Map.Entry<String, Integer> detectTextGcs(MultipartFile cardImg) throws IOException {
         String filePath = bucketFilePath + cardImg.getOriginalFilename();
         log.info("filePath: {}", filePath);
-        return detectTextGcs(filePath);
+
+        String filename = googleCloudStorageService.upload(cardImg);
+        Integer price = detectTextGcs(filePath);
+
+        Map.Entry<String, Integer> result = new AbstractMap.SimpleEntry<>(filename, price);
+
+        // TODO(developer): Replace these variables before running the sample.
+
+        return result;
     }
 
     // Detects text in the specified remote image on Google Cloud Storage.

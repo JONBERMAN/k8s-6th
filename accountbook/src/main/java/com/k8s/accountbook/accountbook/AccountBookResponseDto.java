@@ -29,11 +29,8 @@ public class AccountBookResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class receiptResponseDto{
-        private String expense;
-        private Integer money;
-        private LocalDate date;
+    public static class OcrResponseDto{
         private String receiptDirectory;
-
+        private Integer money;
     }
 }

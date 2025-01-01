@@ -1,10 +1,12 @@
 package com.k8s.accountbook;
 
+import com.google.protobuf.MapEntry;
 import com.k8s.accountbook.accountbook.AccountBook;
 import com.k8s.accountbook.accountbook.AccountBookResponseDto;
 import com.k8s.accountbook.dto.RequestDto;
 import com.k8s.accountbook.dto.ResponseDto;
 import com.k8s.accountbook.google.GoogleOcrService;
+import com.k8s.accountbook.google.GoogleStorageService;
 import com.k8s.accountbook.user.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -24,6 +27,7 @@ public class MyController {
 
     private final MyService myService;
     private final GoogleOcrService googleOcrService;
+    private final GoogleStorageService googleStorageService;
 
     // 회원가입
     @PostMapping("/user/signup")
@@ -83,13 +87,14 @@ public class MyController {
 
     // ocr 영수증 등록
     @PostMapping("/accountbook/ocr")
-    public ResponseDto<Integer> setReceipt(@RequestPart("file") MultipartFile file) throws IOException {
+    public ResponseDto<AccountBookResponseDto.OcrResponseDto> setReceipt(@RequestPart("file") MultipartFile file) throws IOException {
 
         //Integer price = googleOcrService.detectText(receiptDto.getReceiptDirectory());
 
-        Integer price = googleOcrService.detectTextGcs(file);
+        String filename = "googleStorageService.upload(file)";
+        Map.Entry<String, Integer> result = googleOcrService.detectTextGcs(file);
 
-        return ResponseDto.ok(price);
+        return ResponseDto.ok(new AccountBookResponseDto.OcrResponseDto(result.getKey() ,result.getValue()));
     }
 
 }

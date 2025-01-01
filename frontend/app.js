@@ -9,10 +9,11 @@ const fs = require("fs");
 
 const util = require('./utils')
 
-const ACCOUNTBOOK_API_ADDR = process.env.ACCOUNTBOOK_API_ADDR
-//const ACCOUNTBOOK_API_ADDR = "192.168.56.100:8080";
+//const ACCOUNTBOOK_API_ADDR = process.env.ACCOUNTBOOK_API_ADDR
+const ACCOUNTBOOK_API_ADDR = "localhost";
 
-const BACKEND_URI = `http://${ACCOUNTBOOK_API_ADDR}:8080/k8s`
+//const BACKEND_URI = `http://${ACCOUNTBOOK_API_ADDR}:8080/k8s`;
+const BACKEND_URI = `http://localhost:8080/k8s`
 
 
 const signupUri = `${BACKEND_URI}/user/signup`
