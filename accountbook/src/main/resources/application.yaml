@@ -17,10 +17,3 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
-
-cloud:
-  google:
-    storage:
-      bucket:
-        name: k8s_receipt_bucket
-        filePath: gs://k8s_receipt_bucket/
