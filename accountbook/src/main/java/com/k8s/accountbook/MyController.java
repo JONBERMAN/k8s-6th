@@ -83,9 +83,11 @@ public class MyController {
 
     // ocr 영수증 등록
     @PostMapping("/accountbook/ocr")
-    public ResponseDto<Integer> setReceipt(@RequestBody RequestDto.ReceiptDto receiptDto) throws IOException {
+    public ResponseDto<Integer> setReceipt(@RequestPart("file") MultipartFile file) throws IOException {
 
-        Integer price = googleOcrService.detectText(receiptDto.getReceiptDirectory());
+        //Integer price = googleOcrService.detectText(receiptDto.getReceiptDirectory());
+
+        Integer price = googleOcrService.detectTextGcs(file);
 
         return ResponseDto.ok(price);
     }

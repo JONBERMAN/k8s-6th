@@ -34,8 +34,10 @@ dependencies {
 
 
 	//ocr
-	implementation(platform("com.google.cloud:libraries-bom:26.52.0"))
+	//implementation(platform("com.google.cloud:libraries-bom:26.52.0"))
 	implementation("com.google.cloud:google-cloud-vision:3.52.0")
+
+	implementation 'com.google.cloud:google-cloud-storage:2.39.0'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
 }

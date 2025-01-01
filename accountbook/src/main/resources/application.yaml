@@ -1,8 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST}:3306/accountbook
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/accountbook
+    #url: jdbc:mysql://${MYSQL_HOST}:3306/accountbook
+    username: root
+    #username: ${MYSQL_USER}
+    password: 245245
+    #password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
@@ -17,3 +20,10 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+
+cloud:
+  google:
+    storage:
+      bucket:
+        name: k8s_receipt_bucket
+        filePath: gs://k8s_receipt_bucket/
