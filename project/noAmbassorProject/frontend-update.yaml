@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: k8s-6-frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      volumes:
+      - name: frontend-volume
+        persistentVolumeClaim:
+          claimName: frontend-pvc
+      containers:
+      - name: frontend
+        image: chungeon/accountbook-front:4.0
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "1Gi"
+          limits:
+            cpu: "500m"
+            memory: "2Gi"
+        envFrom:
+        - configMapRef:
+            name: frontend-cm    
+        volumeMounts:
+        - name: frontend-volume
+          mountPath: /frontend/ocrImage     
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+  namespace: k8s-6-frontend
+  labels:
+    app: frontend
+spec:
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: LoadBalancer
+  selector:
+    app: frontend
+

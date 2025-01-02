@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mysqldb
+  name: mysqldb
+  namespace: k8s-6-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqldb
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: mysqldb
+    spec:
+      containers:
+        - args:
+            - --character-set-server=utf8
+            - --collation-server=utf8_general_ci
+          env:
+            - name: MYSQL_DATABASE
+              value: accountbook
+            - name: MYSQL_PASSWORD
+              value: k8spass#
+            - name: MYSQL_ROOT_HOST
+              value: '%'
+            - name: MYSQL_ROOT_PASSWORD
+              value: k8spass#
+            - name: MYSQL_USER
+              value: kevin
+          image: chungeon/mysql:1.0
+          name: mysqldb
+          ports:
+            - containerPort: 3306
+              hostPort: 3306
+              protocol: TCP
+          resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mysqldb
+  name: mysqldb-svc
+  namespace: k8s-6-db
+spec:
+  ports:
+    - name: "3306"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: mysqldb

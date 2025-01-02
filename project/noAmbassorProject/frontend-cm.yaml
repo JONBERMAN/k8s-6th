@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: frontend-cm
+  namespace: k8s-6-frontend
+data:
+  GUESTBOOK_API_ADDR: backend-svc.k8s-6-backend.svc.cluster.local:3000
+  PORT: "3000"
+

@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+  namespace: k8s-6-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - image: chungeon/accountbook-front:4.0
+        name: frontend
+        envFrom:
+        - configMapRef:
+            name: frontend-cm
+        ports:
+        - containerPort: 3000
+          hostPort: 3000
+          protocol: TCP
+        volumeMounts:
+        - name: ocr-image-volume
+          mountPath: /frontend/ocrImage
+      - name: nginx-proxy-conf
+        image: nginx:1.25.3-alpine
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: frontend-proxy-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: ocr-image-volume
+        hostPath:
+          path: /home/kevin/ocrImage
+          type: Directory
+      - name:  frontend-proxy-volume        
+        configMap:
+          name: nginx-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: frontend
+  name: frontend-svc
+  namespace: k8s-6-frontend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    app: frontend

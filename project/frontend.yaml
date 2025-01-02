@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: test-k8s
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: taehoon981/frontend:2.0
+        ports:
+        - containerPort: 3001
+        env:
+        - name: GUESTBOOK_API_ADDR
+          value: "backend-svc.test-k8s.svc.cluster.local:3000"  
+        - name: PORT
+          value: "3001"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+  namespace: test-k8s
+  labels:
+    app: frontend
+spec:
+  ports:
+  - port: 3001
+    targetPort: 3001
+  type: NodePort
+  selector:
+    app: frontend
+

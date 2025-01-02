@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: frontend-ns
+  labels:
+    app: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      volumes:
+      - name: frontend-volume
+        persistentVolumeClaim:
+          claimName: frontend-pvc
+      - name: frontend-proxy-volume
+        configMap:
+          name: nginx-conf
+      serviceAccountName: frontend-sa
+      containers:
+      - name: nginx-proxy-conf
+        image: nginx:1.25.3-alpine
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: frontend-proxy-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      - name: frontend
+        image: kongjub/frontend:2.1
+        ports:
+        - containerPort: 3001
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "1Gi"
+          limits:
+            cpu: "500m"
+            memory: "2Gi"
+        envFrom:
+        - configMapRef:
+            name: frontend-cm    
+        volumeMounts:
+        - name: frontend-volume
+          mountPath: /frontend/frontend-data     
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+  namespace: frontend-ns
+  labels:
+    app: frontend
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer
+  selector:
+    app: frontend
+

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: k8s-6-backend
+  labels:
+    app: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      volumes:
+      - name: backend-ocr-volume
+        persistentVolumeClaim:
+          claimName: backend-ocr-pvc 
+      - name: backend-volume
+        persistentVolumeClaim:
+          claimName: backend-pvc
+      containers:
+      - name: backend
+        image: chungeon/accountbook-back:3.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value : "/gcp-key.json"
+        - name: MYSQL_HOST
+          value: "mysql-svc.k8s-6-db.svc.cluster.local:3306"  
+        - name: MYSQL_USER
+          value: "root"
+        - name: MYSQL_PASSWORD
+          value: "k8spass#" 
+        - name: PORT
+          value: "8080"
+        volumeMounts:
+        - name: backend-ocr-volume
+          mountPath: /gcp-key.json
+        - name: backend-ocr-volume
+          mountPath: /frontend/ocrImage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc
+  namespace: k8s-6-backend
+  labels:
+    app: backend
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: backend
+

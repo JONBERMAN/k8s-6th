@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: backeend-cm
+  namespace: k8s-6-backend
+data:
+  GOOGLE_APPLICATION_CREDENTIALS: /gcp-key.json
+  MYSQL_HOST: mysqldb
+  MYSQL_USER: root
+  MYSQL_PASSWORD: k8spass#
+

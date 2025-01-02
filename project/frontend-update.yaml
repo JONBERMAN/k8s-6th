@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: frontend-ns
+  labels:
+    app: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      volumes:
+      - name: frontend-volume
+        persistentVolumeClaim:
+          claimName: frontend-pvc
+      serviceAccountName: frontend-sa
+      containers:
+      - name: frontend
+        image: kongjub/frontend:2.1
+        ports:
+        - containerPort: 3001
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "1Gi"
+          limits:
+            cpu: "500m"
+            memory: "2Gi"
+        envFrom:
+        - configMapRef:
+            name: frontend-cm    
+        volumeMounts:
+        - name: frontend-volume
+          mountPath: /frontend/frontend-data     
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+  namespace: frontend-ns
+  labels:
+    app: frontend
+spec:
+  ports:
+  - port: 3001
+    targetPort: 3001
+  type: LoadBalancer
+  selector:
+    app: frontend
+

@@ -1,0 +1,2 @@
+GUESTBOOK_API_ADDR=backend-svc.test-k8s.svc.cluster.local:3000
+PORT=3001
