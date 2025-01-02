@@ -1,0 +1,192 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mysqldb
+  name: mysqldb
+  namespace: k8s-6-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqldb
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: mysqldb
+    spec:
+      containers:
+        - args:
+            - --character-set-server=utf8
+            - --collation-server=utf8_general_ci
+          env:
+            - name: MYSQL_DATABASE
+              value: accountbook
+            - name: MYSQL_PASSWORD
+              value: k8spass#
+            - name: MYSQL_ROOT_HOST
+              value: '%'
+            - name: MYSQL_ROOT_PASSWORD
+              value: k8spass#
+            - name: MYSQL_USER
+              value: kevin
+          image: chungeon/mysql:1.0
+          name: mysqldb
+          ports:
+            - containerPort: 3306
+              hostPort: 3306
+              protocol: TCP
+          resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mysqldb
+  name: mysqldb
+  namespace: k8s-6-db
+spec:
+  ports:
+    - name: "3306"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: mysqldb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: backend
+  name: backend
+  namespace: k8s-6-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /gcp-key.json
+            - name: MYSQL_HOST
+              value: mysqldb.k8s-6-db
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              value: k8spass#
+          image: chungeon/accountbook-back:3.0
+          name: backend
+          ports:
+            - containerPort: 8080
+              hostPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: gcp-key-volume
+              mountPath: /gcp-key.json
+            - name: ocr-image-volume
+              mountPath: /frontend/ocrImage
+      volumes:
+        - name: gcp-key-volume
+          hostPath:
+            path: /home/kevin/gcp-key.json
+            type: File
+        - name: ocr-image-volume
+          persistentVolumeClaim:
+            claimName: back-nfs-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: backend
+  name: backend
+  namespace: k8s-6-backend
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+  namespace: k8s-6-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: chungeon/accountbook-front:4.0
+        env:
+        - name: ACCOUNTBOOK_API_ADDR
+          value: backend.k8s-6-backend
+        ports:
+        - containerPort: 3000
+          hostPort: 3000
+          protocol: TCP
+        volumeMounts:
+        - name: ocr-image-volume
+          mountPath: /frontend/ocrImage
+      - name: nginx-proxy-conf
+        image: nginx:1.25.3-alpine
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        envFrom: 
+        - configMapRef:
+            name: nginx-conf
+        volumeMounts:
+        - name: frontend-proxy-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: frontend-proxy-log-volume
+          mountPath: /var/log/nginx
+      volumes:
+        - name: ocr-image-volume
+          persistentVolumeClaim:
+            claimName: front-nfs-pvc
+        - name: frontend-proxy-volume
+          configMap:
+            name: nginx-conf
+        - name: frontend-proxy-log-volume
+          hostPath: 
+            path: /home/kevin/nginx-log
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+  namespace: k8s-6-frontend
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    app: frontend
+
