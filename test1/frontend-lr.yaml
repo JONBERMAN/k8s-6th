@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: frontend-lr
+  namespace: k8s-6-frontend
+spec:
+  limits:
+  - type: Container
+    defaultRequest:
+      cpu: "200m"            # 기본 CPU 요청 (0.2 vCPU)
+      memory: "1Gi"          # 기본 메모리 요청
+    default:
+      cpu: "500m"            # 기본 CPU 제한 (0.5 vCPU)
+      memory: "2Gi"          # 기본 메모리 제한
+    max:
+      cpu: "2"               # 최대 CPU 제한 (2 vCPU)
+      memory: "4Gi"          # 최대 메모리 제한
+    min:
+      cpu: "100m"            # 최소 CPU 요청 (0.1 vCPU)
+      memory: "512Mi"        # 최소 메모리 요청
+  - type: Pod
+    max:
+      cpu: "2"               # Pod 당 최대 2 vCPU 사용 가능
+      memory: "4Gi"          # Pod 당 최대 4Gi 메모리 사용 가능
+    min:
+      cpu: "100m"            # Pod 당 최소 0.1 vCPU 요청 필요
+      memory: "512Mi"        # Pod 당 최소 512Mi 메모리 요청 필요
+
