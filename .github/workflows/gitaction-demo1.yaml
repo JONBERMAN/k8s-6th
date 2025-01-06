@@ -1,0 +1,16 @@
+name: GitActions Demo1
+on: push
+jobs:
+  GitActions-demo-job:
+    name: DemoJOb
+    runs-on: ubuntu-latest
+    steps:
+      - name: print a evironment
+        env: 
+          MY_VAR: Hi My Name is
+          FIRST_NAME: Tae-hoon 
+          LAST_NAME: KIM
+          AWS_JOB_NAME: TH.KIM
+        run: |
+          echo $MY_VAR $FIRST_NAME $LAST_NAME.
+          echo $MY_VAR $AWS_JOB_NAME
