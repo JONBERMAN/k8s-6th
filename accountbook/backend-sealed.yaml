@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: backend-secret
+  namespace: k8s-6-backend
+spec:
+  encryptedData:
+    MYSQL_PASSWORD: AgBcunowcy7+hjt7FE3lppih1IGB42YThxZuiOpzog/xhOhGNRxGIO/8QJfb+BWPZ4KsA8V7V1O76W8dHVIBH0rL6GMYHw3paT7Q/C2ctpDfs9Jt+SzNhoKn5nbhv5E3jHVYWWYXgb2MU2wtSl/5tA8ijZ7BFdRIUWpl0tZd9p2gHT+VT5iPK2D/cG1UEPOVetkyyEKc0hEkvcF1CBb6GGngAEk5PR5pAFbUa+ldMXc+rJwG0PpMsUXI4Kj7cpi9gLogGPdhS3xGcZ8h76A0p8v0Px5VDHLWCUji8jNJKjI4a+iPaDxJ6LnnJ42O8sl137bZm7ymAwCe9Wuh7f1gSB2MmwNgdP/S3eDCUmix/aLSppbZL/xXh05+dvmKJxoSnaDvd4bHXOm+3wgCEBaS+0bMON2+qekC7mEODFy2FkoN9sMY4DAkSAF31GpxsAhxsNJn+fNwoYyO3nlNPgcBW9ef1FUz6dy0CLRsxfGs6C0tYtmrhE0XqO8a1GaZWnW1o+u/nYv+G7jHcWLfaFVpWg91WfHawps+gaSSuc+yVF/h2E22zGiU/o93eRtAickvnTnt/7h7JUcm8kJcQVAe51n5FH20lknPL6NfZO4+0as6HdbUDwu0hGyiGTZTEJ1k+MA5/e1jIrP3fmzqpKTLJqcU5XT7gYCDcFP+m+icNcp3YNFhP8h6UPHWSmF8dpA3uYKb1i6wuEcPPg==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: backend-secret
+      namespace: default

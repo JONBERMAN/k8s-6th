@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  GOOGLE_APPLICATION_CREDENTIALS: /gcp-key.json
+  MYSQL_HOST: mysql.k8s-6-db
+  MYSQL_USER: root
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: backend-cm
+  namespace: k8s-6-backend

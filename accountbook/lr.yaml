@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: frontend-lr
+  namespace: k8s-6-frontend
+spec:
+  limits:
+  - type: Container
+    defaultRequest:
+      cpu: "500m"          
+      memory: "1Gi"       
+    default:
+      cpu: "1"        
+      memory: "2Gi"     
+    max:
+      cpu: "2"         
+      memory: "2Gi"   
+    min:
+      cpu: "100m"    
+      memory: "128Mi"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: backend-lr
+  namespace: k8s-6-backend
+spec:
+  limits:
+  - type: Container
+    defaultRequest:
+      cpu: "1"     
+      memory: "1Gi"   
+    default:
+      cpu: "2"     
+      memory: "2Gi"  
+    max:
+      cpu: "2"       
+      memory: "2Gi" 
+    min:
+      cpu: "0.5"  
+      memory: "512Mi"

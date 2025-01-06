@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: frontend-lr
+  namespace: k8s-6-frontend
+spec:
+  limits:
+  - type: Container
+    max:
+      cpu: "2"         
+      memory: "2Gi"   
+    min:
+      cpu: "10m"    
+      memory: "50Mi"
+
