@@ -20,5 +20,3 @@ ENTRYPOINT ["node", "--inspect=9229", "app.js"]
 
 # To run without the debugger, uncomment the line below:
 # ENTRYPOINT ["node", "app.js"]
-as
-d
