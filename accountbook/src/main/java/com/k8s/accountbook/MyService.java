@@ -8,6 +8,7 @@ import com.k8s.accountbook.user.UserRepository;
 import com.k8s.accountbook.google.GoogleOcrService;
 import com.k8s.accountbook.user.UserResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MyService {
@@ -46,8 +48,10 @@ public class MyService {
         User findUser = userRepository.findByIdentityAndPassword(id, password);
 
         if (findUser != null) {
+            log.info("로그인 성공!!!");
             return new UserResponseDto.LoginResponse(findUser.getId(), findUser.getName());
         } else  {
+            log.info("로그인 실패...");
             return new UserResponseDto.LoginResponse(-1L, null);
         }
     }
